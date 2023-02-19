@@ -6,14 +6,42 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" // or "postgresql" or "mysql" or "mongodb"
+  provider = "cockroachdb" // or "postgresql" or "mysql" or "mongodb"
   url      = env("DATABASE_URL")
 }
 
-model Example {
-  id  String  @id @default(cuid())
-  foo String
-  bar String?
+model User {
+  id       String   @id @default(uuid())
+  name     String
+  email    String   @unique
+  password String
+  account  Account?
 
-  @@map(name: "examples")
+  @@map("users")
+}
+
+model Account {
+  id           String        @id @default(uuid())
+  balance      Float         @default(0)
+  user         User          @relation(fields: [userId], references: [id])
+  userId       String        @unique
+  transactions Transaction[]
+
+  @@map("accounts")
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+}
+
+model Transaction {
+  id        String          @id @default(uuid())
+  type      TransactionType
+  amount    Float
+  timestamp DateTime        @default(now())
+  accountId String
+  account   Account         @relation(fields: [accountId], references: [id])
+
+  @@map("transactions")
 }
