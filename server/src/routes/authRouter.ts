@@ -4,6 +4,7 @@ import { CreateUserDto, LoginUserDto } from "../dto/user";
 import { AppError } from "../errors/appError";
 import { signJwtToken } from "../middlewares/signJwtToken";
 import { AuthService } from "../services/authService";
+import dayjs from "dayjs";
 
 const authRouter = expressRouter();
 const authService = new AuthService();
@@ -29,12 +30,17 @@ authRouter.post("/login", async (req, res) => {
     const user = LoginUserDto.parse(req.body);
 
     const loggedUser = await authService.loginUser(user);
-    const token = await signJwtToken(loggedUser.id);
+    const token = signJwtToken(loggedUser);
 
-    res.status(200).json({
-      ...loggedUser,
-      token,
+    // Sending the token via cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      expires: dayjs().add(1, "day").toDate(),
     });
+
+    res.status(200).json(loggedUser);
   } catch (error: unknown) {
     if (error instanceof ZodError) {
       res.status(400).json({ message: "Invalid data" });

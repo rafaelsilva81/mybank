@@ -1,9 +1,12 @@
 import jwt from "jsonwebtoken";
 import { env } from "../config/env";
 
-export async function signJwtToken(payload: string) {
-  return jwt.sign(payload, Buffer.from(env.JWT_SECRET, "base64"), {
+export function signJwtToken(payload: any) {
+  const token = jwt.sign(payload, env.JWT_SECRET, {
     expiresIn: "1d",
     algorithm: "HS256",
   });
+
+  console.log(token);
+  return token;
 }

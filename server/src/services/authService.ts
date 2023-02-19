@@ -32,6 +32,9 @@ export class AuthService {
 
       return newUser;
     } catch (error) {
+      if (error instanceof RegisterError) {
+        throw error;
+      }
       console.error(error);
       throw new InternalError("Houve um erro ao registrar o usuário");
     }
@@ -57,6 +60,9 @@ export class AuthService {
 
       return foundUser;
     } catch (error) {
+      if (error instanceof LoginError) {
+        throw error;
+      }
       console.error(error);
       throw new InternalError("Houve um erro ao logar o usuário");
     }

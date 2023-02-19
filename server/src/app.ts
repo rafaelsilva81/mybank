@@ -15,7 +15,7 @@ async function bootstrap() {
   app.use(express.urlencoded({ extended: true }));
   app.use(
     jwt({
-      secret: Buffer.from(env.JWT_SECRET, "base64"),
+      secret: env.JWT_SECRET,
       algorithms: ["HS256"],
       maxAge: "1d",
     }).unless({ path: ["/auth/login", "/auth/register"] })
