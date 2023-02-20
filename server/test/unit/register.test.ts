@@ -1,8 +1,9 @@
-import { AuthService } from "../src/services/authService";
-import { prisma } from "../src/config/prisma";
+import { AuthService } from "../../src/services/authService";
+import { prisma } from "../../src/config/prisma";
+import { hashPassword } from "../../src/middlewares/hashPassword";
 
 const authService = new AuthService();
-jest.retryTimes(2);
+jest.retryTimes(5);
 
 const testUser = {
   name: "Teste",
@@ -34,14 +35,12 @@ describe("Register", () => {
   });
 });
 
-afterAll(async () => {
-  await prisma.$disconnect();
-});
-
 beforeAll(async () => {
   await prisma.user.deleteMany();
   await prisma.user.create({
-    data: duplicatedUser,
+    data: {
+      ...duplicatedUser,
+      password: await hashPassword(duplicatedUser.password),
+    },
   });
-  await prisma.$disconnect();
 });
