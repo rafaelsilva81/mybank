@@ -3,9 +3,12 @@ import { prisma } from "../config/prisma";
 import { CreateUserDto, LoginUserDto } from "../dto/user";
 import { checkPassword } from "../middlewares/checkPassword";
 import { hashPassword } from "../middlewares/hashPassword";
+import { EventEmitter } from "events";
 import InternalError from "../errors/other/internalError";
 import LoginError from "../errors/auth/loginError";
 import RegisterError from "../errors/auth/registerError";
+
+const emitter = new EventEmitter();
 
 export class AuthService {
   async registerUser(user: z.infer<typeof CreateUserDto>) {
@@ -19,7 +22,6 @@ export class AuthService {
       });
 
       if (checkUser) {
-        console.log(checkUser);
         throw new RegisterError("E-mail já cadastrado");
       }
 
@@ -29,6 +31,8 @@ export class AuthService {
           password: hashed,
         },
       });
+
+      //emitter.emit("register", newUser);
 
       return newUser;
     } catch (error) {

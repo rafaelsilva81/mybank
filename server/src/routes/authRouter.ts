@@ -11,11 +11,11 @@ const authService = new AuthService();
 
 authRouter.post("/register", async (req, res) => {
   try {
-    const user = CreateUserDto.parse(req.body);
+    const userData = CreateUserDto.parse(req.body);
 
-    const newUser = await authService.registerUser(user);
+    const newUser = await authService.registerUser(userData);
 
-    res.status(201).json(newUser);
+    res.status(201).json({ newUser });
   } catch (error: unknown) {
     if (error instanceof ZodError) {
       res.status(400).json({ message: "Invalid data" });
@@ -27,9 +27,9 @@ authRouter.post("/register", async (req, res) => {
 
 authRouter.post("/login", async (req, res) => {
   try {
-    const user = LoginUserDto.parse(req.body);
+    const userData = LoginUserDto.parse(req.body);
 
-    const loggedUser = await authService.loginUser(user);
+    const loggedUser = await authService.loginUser(userData);
     const token = signJwtToken(loggedUser);
 
     // Sending the token via cookie
