@@ -46,23 +46,26 @@ export class AuthService {
 
   async loginUser(user: z.infer<typeof LoginUserDto>) {
     try {
-      const foundUser = await prisma.user.findUnique({
+      const checkUser = await prisma.user.findUnique({
         where: {
           email: user.email,
         },
       });
 
-      if (!foundUser) {
-        throw new LoginError("E-mail e/ou senha incorretos");
+      if (!checkUser) {
+        throw new LoginError("E-mail ou senha incorretos 1");
       }
 
-      const isMatch = await checkPassword(user.password, foundUser.password);
+      const checkPasswordResult = checkPassword(
+        user.password,
+        checkUser.password
+      );
 
-      if (!isMatch) {
-        throw new LoginError("E-mail e/ou senha incorretos");
+      if (!checkPasswordResult) {
+        throw new LoginError("E-mail ou senha incorretos 2");
       }
 
-      return foundUser;
+      return checkUser;
     } catch (error) {
       if (error instanceof LoginError) {
         throw error;

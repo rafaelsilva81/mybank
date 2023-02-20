@@ -7,8 +7,8 @@ const CreateUserDto = z.object({
   email: z.string().email({
     message: "Email must be a valid email address",
   }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters long",
+  password: z.string().min(6, {
+    message: "Password must be at least 6 characters long",
   }),
 });
 
