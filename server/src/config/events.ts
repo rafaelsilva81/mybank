@@ -1,9 +1,10 @@
-import { EventEmitter } from "events";
-import createDefaultAccount from "../subscribers/createDefaultAccount";
+import { EventEmitter } from 'events'
 
-const eventEmitter = new EventEmitter();
+import createDefaultAccount from '../subscribers/createDefaultAccount'
+
+const eventEmitter = new EventEmitter()
 
 // Events
-eventEmitter.on("register", createDefaultAccount);
+eventEmitter.on('register', createDefaultAccount)
 
-export default eventEmitter;
+export default eventEmitter

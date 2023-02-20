@@ -1,25 +1,42 @@
-import { prisma } from "../config/prisma";
-import FileUploadError from "../errors/other/fileUploadError";
-import InternalError from "../errors/other/internalError";
-import { FileUploadService } from "./fileUploadService";
+import { prisma } from '../config/prisma'
+import { AppError } from '../errors/appError'
+import BadRequestError from '../errors/other/badRequestError'
+import InternalError from '../errors/other/internalError'
+
+import { FileUploadService } from './fileUploadService'
 
 export class UserService {
-  constructor(private fileUploadService: FileUploadService) {}
+  fileUploadService: FileUploadService
 
-  async uploadAvatar(file: Express.Multer.File, userId: string) {
+  constructor() {
+    this.fileUploadService = new FileUploadService()
+  }
+
+  async uploadAvatar(file: Express.Multer.File, id: string) {
     try {
-      const path = await this.fileUploadService.uploadAvatar(file);
+      const path = await this.fileUploadService.uploadAvatar(file)
+
+      // check if user exists
+      const user = await prisma.user.findUnique({
+        where: { id },
+      })
+
+      if (!user) {
+        throw new BadRequestError('User not found')
+      }
 
       await prisma.user.update({
-        where: { id: userId },
+        where: { id },
         data: { avatar: path },
-      });
+      })
+
+      return true
     } catch (error) {
-      if (error instanceof FileUploadError) {
-        throw error;
+      if (error instanceof AppError) {
+        throw error
       }
-      console.error(error);
-      throw new InternalError("Error updating the avatar");
+      console.error(error)
+      throw new InternalError('Error updating the avatar')
     }
   }
 }

@@ -1,40 +1,46 @@
-import express from "express";
-import { env } from "./config/env";
-import morgan from "morgan";
-import cors from "cors";
-import { expressjwt as jwt } from "express-jwt";
-import authRouter from "./routes/authRouter";
+import path from 'path'
 
-const app = express();
+import cors from 'cors'
+import express from 'express'
+import { expressjwt as jwt } from 'express-jwt'
+import morgan from 'morgan'
+
+import { env } from './config/env'
+import authRouter from './routes/authRouter'
+import userRouter from './routes/userRouter'
+
+const app = express()
 
 async function bootstrap() {
   // Middleware
-  app.use(express.json());
-  app.use(morgan(env.NODE_ENV === "production" ? "combined" : "dev"));
-  app.use(cors({ exposedHeaders: "Authorization" }));
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json())
+  app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'))
+  app.use(cors({ exposedHeaders: 'Authorization' }))
+  app.use(express.urlencoded({ extended: true }))
+
   app.use(
     jwt({
       secret: env.JWT_SECRET,
-      algorithms: ["HS256"],
-      maxAge: "1d",
-    }).unless({ path: ["/auth/login", "/auth/register"] })
-  );
+      algorithms: ['HS256'],
+      maxAge: '1d',
+    }).unless({
+      path: [/^\/(auth|uploads)/i],
+    })
+  )
 
   // Routes
-  app.use("/auth", authRouter);
-  app.use("/protected", (req, res) => {
-    res.status(200).json({ message: "This is supposed to be protected!" });
-  });
+  app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
+  app.use('/auth', authRouter)
+  app.use('/user', userRouter)
 
   // Start server
   app.listen(env.PORT, () => {
-    console.debug(`Server is running on port http://localhost:${env.PORT}`);
-  });
+    console.debug(`Server is running on port http://localhost:${env.PORT}`)
+  })
 }
 
 bootstrap().catch((err) => {
-  console.error(err);
-});
+  console.error(err)
+})
 
-export default app;
+export default app

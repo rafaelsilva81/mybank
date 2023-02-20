@@ -1,26 +1,28 @@
-import { z } from "zod";
-import { prisma } from "../config/prisma";
-import { CreateUserDto, LoginUserDto } from "../dto/user";
-import { checkPassword } from "../middlewares/checkPassword";
-import { hashPassword } from "../middlewares/hashPassword";
-import eventEmitter from "../config/events";
-import InternalError from "../errors/other/internalError";
-import LoginError from "../errors/auth/loginError";
-import RegisterError from "../errors/auth/registerError";
+import { z } from 'zod'
+
+import eventEmitter from '../config/events'
+import { prisma } from '../config/prisma'
+import { CreateUserDto, LoginUserDto } from '../dto/user'
+import { AppError } from '../errors/appError'
+import LoginError from '../errors/auth/loginError'
+import RegisterError from '../errors/auth/registerError'
+import InternalError from '../errors/other/internalError'
+import { checkPassword } from '../middlewares/checkPassword'
+import { hashPassword } from '../middlewares/hashPassword'
 
 export class AuthService {
   async registerUser(user: z.infer<typeof CreateUserDto>) {
-    const hashed = await hashPassword(user.password);
+    const hashed = await hashPassword(user.password)
 
     try {
       const checkUser = await prisma.user.findUnique({
         where: {
           email: user.email,
         },
-      });
+      })
 
       if (checkUser) {
-        throw new RegisterError("E-mail já cadastrado");
+        throw new RegisterError('E-mail já cadastrado')
       }
 
       const newUser = await prisma.user.create({
@@ -28,17 +30,17 @@ export class AuthService {
           ...user,
           password: hashed,
         },
-      });
+      })
 
-      eventEmitter.emit("register", newUser);
+      eventEmitter.emit('register', newUser)
 
-      return newUser;
+      return newUser
     } catch (error) {
-      if (error instanceof RegisterError) {
-        throw error;
+      if (error instanceof AppError) {
+        throw error
       }
-      console.error(error);
-      throw new InternalError("Houve um erro ao registrar o usuário");
+      console.error(error)
+      throw new InternalError('Houve um erro ao registrar o usuário')
     }
   }
 
@@ -48,28 +50,28 @@ export class AuthService {
         where: {
           email: user.email,
         },
-      });
+      })
 
       if (!checkUser) {
-        throw new LoginError("E-mail ou senha incorretos 1");
+        throw new LoginError('E-mail ou senha incorretos 1')
       }
 
       const checkPasswordResult = checkPassword(
         user.password,
         checkUser.password
-      );
+      )
 
       if (!checkPasswordResult) {
-        throw new LoginError("E-mail ou senha incorretos 2");
+        throw new LoginError('E-mail ou senha incorretos 2')
       }
 
-      return checkUser;
+      return checkUser
     } catch (error) {
-      if (error instanceof LoginError) {
-        throw error;
+      if (error instanceof AppError) {
+        throw error
       }
-      console.error(error);
-      throw new InternalError("Houve um erro ao logar o usuário");
+      console.error(error)
+      throw new InternalError('Houve um erro ao logar o usuário')
     }
   }
 }

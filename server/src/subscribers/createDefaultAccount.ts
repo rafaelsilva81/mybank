@@ -1,5 +1,6 @@
-import { User } from "@prisma/client";
-import { prisma } from "../config/prisma";
+import { User } from '@prisma/client'
+
+import { prisma } from '../config/prisma'
 
 export default async (user: User) => {
   await prisma.account.create({
@@ -11,7 +12,7 @@ export default async (user: User) => {
       },
       balance: 0,
     },
-  });
+  })
 
-  console.debug("✅ Default account created for user", user.id);
-};
+  console.debug('✅ Default account created for user', user.id)
+}
