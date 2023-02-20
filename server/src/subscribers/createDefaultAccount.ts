@@ -13,5 +13,5 @@ export default async (user: User) => {
     },
   });
 
-  console.log("✅ Default account created for user", user.id);
+  console.debug("✅ Default account created for user", user.id);
 };
