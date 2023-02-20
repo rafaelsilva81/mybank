@@ -53,7 +53,7 @@ export class AuthService {
       })
 
       if (!checkUser) {
-        throw new LoginError('E-mail ou senha incorretos 1')
+        throw new LoginError('E-mail ou senha incorretos')
       }
 
       const checkPasswordResult = checkPassword(
@@ -62,7 +62,7 @@ export class AuthService {
       )
 
       if (!checkPasswordResult) {
-        throw new LoginError('E-mail ou senha incorretos 2')
+        throw new LoginError('E-mail ou senha incorretos')
       }
 
       return checkUser

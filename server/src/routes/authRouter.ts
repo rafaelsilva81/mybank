@@ -43,6 +43,7 @@ authRouter.post('/login', async (req, res) => {
 
     res.status(200).json(loggedUser)
   } catch (error: unknown) {
+    res.clearCookie('token')
     if (error instanceof ZodError) {
       res.status(400).json({ message: 'Invalid data' })
     } else if (error instanceof AppError) {
