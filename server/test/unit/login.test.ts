@@ -11,16 +11,25 @@ const testUser = {
   password: "teste123",
 };
 
+const wrongCredentials = {
+  email: "wrongemail@example.com",
+  password: "wrongpassword",
+};
+
 describe("Login", () => {
   test("Should login a user", async () => {
-    const user = authService.loginUser(testUser);
-    expect(user).resolves.toMatchObject({
+    const user = await authService.loginUser(testUser);
+    expect(user).toMatchObject({
       id: expect.any(String),
       name: testUser.name,
       email: testUser.email,
       password: expect.any(String),
       picture: null,
     });
+  });
+
+  test("Should not login a user with wrong credentials", async () => {
+    await expect(authService.loginUser(wrongCredentials)).rejects.toThrow();
   });
 });
 

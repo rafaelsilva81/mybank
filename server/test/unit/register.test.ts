@@ -1,6 +1,7 @@
 import { AuthService } from "../../src/services/authService";
 import { prisma } from "../../src/config/prisma";
 import { hashPassword } from "../../src/middlewares/hashPassword";
+import eventEmitter from "../../src/config/events";
 
 const authService = new AuthService();
 jest.retryTimes(5);
@@ -19,19 +20,23 @@ const duplicatedUser = {
 
 describe("Register", () => {
   test("Should register a new user", async () => {
-    const user = authService.registerUser(testUser);
-    expect(user).resolves.toMatchObject({
+    const eventEmitterSpy = jest.spyOn(eventEmitter, "emit");
+    const user = await authService.registerUser(testUser);
+
+    expect(user).toMatchObject({
       id: expect.any(String),
       name: testUser.name,
       email: testUser.email,
       password: expect.any(String),
       picture: null,
     });
+
+    expect(eventEmitterSpy).toHaveBeenCalledWith("register", user);
   });
 
   test("Should not register a new user with an existing email", async () => {
     const user = authService.registerUser(duplicatedUser);
-    expect(user).rejects.toThrowError();
+    await expect(user).rejects.toThrow();
   });
 });
 
