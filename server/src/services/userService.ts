@@ -14,9 +14,6 @@ export class UserService {
 
   async uploadAvatar(file: Express.Multer.File, id: string) {
     try {
-      const path = await this.fileUploadService.uploadAvatar(file)
-
-      // check if user exists
       const user = await prisma.user.findUnique({
         where: { id },
       })
@@ -24,6 +21,8 @@ export class UserService {
       if (!user) {
         throw new BadRequestError('User not found')
       }
+
+      const path = await this.fileUploadService.uploadAvatar(file)
 
       await prisma.user.update({
         where: { id },
