@@ -1,15 +1,9 @@
 import { z } from 'zod'
 
 const CreateUserDto = z.object({
-  name: z.string().max(100, {
-    message: 'Name must be at most 100 characters long',
-  }),
-  email: z.string().email({
-    message: 'Email must be a valid email address',
-  }),
-  password: z.string().min(6, {
-    message: 'Password must be at least 6 characters long',
-  }),
+  name: z.string().max(100),
+  email: z.string().email(),
+  password: z.string().min(6),
 })
 
 const LoginUserDto = z.object({
@@ -17,4 +11,14 @@ const LoginUserDto = z.object({
   password: z.string(),
 })
 
-export { CreateUserDto, LoginUserDto }
+const UpdateUserDto = z.object({
+  name: z.string().max(100).optional(),
+  email: z.string().email().optional(),
+})
+
+const UpdateUserPasswordDto = z.object({
+  password: z.string().min(6),
+  newPassword: z.string().min(6),
+})
+
+export { CreateUserDto, LoginUserDto, UpdateUserDto, UpdateUserPasswordDto }
