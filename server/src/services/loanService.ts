@@ -1,9 +1,10 @@
+import dayjs from 'dayjs'
+
 import { prisma } from '../config/prisma'
 import AccountNotFoundError from '../errors/account/accountNotFoundError'
 import InsufficientFundsError from '../errors/balance/insufficientFundsError'
 import BadRequestError from '../errors/other/badRequestError'
 import InternalError from '../errors/other/internalError'
-
 /* 
   This file will contain all the loan business logic related to loans.
   It will be used by the loanRouter to handle the routes.
@@ -60,7 +61,7 @@ export class LoanService {
     return newLoan
   }
 
-  async payLoan(userId: string, amount: number) {
+  async payLoan(userId: string) {
     const account = await prisma.account.findUnique({
       where: {
         userId,
@@ -81,7 +82,12 @@ export class LoanService {
       throw new BadRequestError('You do not have an active loan')
     }
 
-    if (loan.amount - amount <= 0) {
+    const loanDays = dayjs().diff(dayjs(loan.createdAt), 'day') + 1
+    const interest = loanDays * loan.interest
+
+    const newBalance = account.balance - (loan.amount + interest)
+
+    if (newBalance < 0) {
       throw new InsufficientFundsError(
         'You do not have enough funds to pay this loan'
       )
@@ -92,7 +98,7 @@ export class LoanService {
         id: account.id,
       },
       data: {
-        balance: account.balance - amount,
+        balance: newBalance,
       },
     })
 
@@ -126,6 +132,8 @@ export class LoanService {
       },
     })
 
-    return loan
+    return {
+      loan: loan,
+    }
   }
 }

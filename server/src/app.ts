@@ -8,6 +8,8 @@ import morgan from 'morgan'
 import { env } from './config/env'
 import errorHandler from './middlewares/errorHandler'
 import authRouter from './routes/authRouter'
+import loanRouter from './routes/loanRouter'
+import transactionRouter from './routes/transactionRouter'
 import userRouter from './routes/userRouter'
 
 /* 
@@ -37,6 +39,8 @@ async function bootstrap() {
   app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
   app.use('/auth', authRouter)
   app.use('/user', userRouter)
+  app.use('/transactions', transactionRouter)
+  app.use('/loan', loanRouter)
 
   // Other middleware
   app.use(errorHandler)

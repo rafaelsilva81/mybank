@@ -11,6 +11,18 @@ import { TransactionService } from '../services/transactionService'
 const transactionRouter = expressRouter()
 const transactionService = new TransactionService()
 
+transactionRouter.get('/balance', async (req: JWTRequest, res, next) => {
+  try {
+    const id = req.auth?.id
+
+    const account = await transactionService.getBalance(id)
+
+    res.status(200).json(account)
+  } catch (error) {
+    next(error)
+  }
+})
+
 transactionRouter.get('/', async (req: JWTRequest, res, next) => {
   try {
     const id = req.auth?.id
@@ -60,19 +72,6 @@ transactionRouter.post('/withdraw', async (req: JWTRequest, res, next) => {
     const transaction = await transactionService.withdraw(id, transactionData)
 
     res.status(201).json(transaction)
-  } catch (error) {
-    next(error)
-  }
-})
-
-transactionRouter.delete('/:id', async (req: JWTRequest, res, next) => {
-  try {
-    const userId = req.auth?.id
-    const { id: transactionId } = RemoveTransactionDto.parse(req.params)
-
-    await transactionService.removeTransaction(userId, transactionId)
-
-    res.status(204).json({})
   } catch (error) {
     next(error)
   }

@@ -54,7 +54,7 @@ userRouter.patch('/profile', async (req: JWTRequest, res, next) => {
 
     const updatedUser = await userService.updateUser(id, userData)
 
-    res.status(204).json(updatedUser)
+    res.status(200).json(updatedUser)
   } catch (error) {
     next(error)
   }

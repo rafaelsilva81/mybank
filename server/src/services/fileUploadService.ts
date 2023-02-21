@@ -27,6 +27,7 @@ export class FileUploadService {
       return '/uploads/' + picture.filename
     } catch (error) {
       // this will cast the error to a FileUploadError
+      console.error(error)
       throw new FileUploadError('Error uploading file')
     }
   }

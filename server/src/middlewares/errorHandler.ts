@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from 'express'
-import { Request as JWTRequest } from 'express-jwt'
+import { Request as JWTRequest, UnauthorizedError } from 'express-jwt'
 import { ZodError } from 'zod'
 
 import { AppError } from '../errors/appError'
@@ -25,8 +25,14 @@ export default function errorHandler(
   if (err instanceof AppError) {
     return res.status(err.status).json({ message: err.message })
   } else if (err instanceof ZodError) {
-    const message = err.issues.map((issue) => issue.message).join('\n')
+    const message = err.issues
+      .map((issue) => issue.path + ' - ' + issue.message)
+      .join(', ')
     return res.status(400).json({ message: 'Validation error: ' + message })
+  } else if (err instanceof UnauthorizedError) {
+    return res
+      .status(401)
+      .json({ message: err.inner.message || 'Unauthorized' })
   }
   return res.status(500).json({ message: 'Server error' })
 }

@@ -35,9 +35,8 @@ loanRouter.post('/apply', async (req: JWTRequest, res, next) => {
 loanRouter.post('/pay', async (req: JWTRequest, res, next) => {
   try {
     const id = req.auth?.id
-    const loanData = CreateLoanDto.parse(req.body)
 
-    const loan = await loanService.payLoan(id, loanData.amount)
+    const loan = await loanService.payLoan(id)
 
     res.status(204).json({})
   } catch (error) {

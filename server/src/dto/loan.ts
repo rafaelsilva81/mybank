@@ -11,8 +11,4 @@ const CreateLoanDto = z.object({
   amount: z.number().positive(),
 })
 
-const PayLoanDto = z.object({
-  amount: z.number().positive(),
-})
-
-export { CreateLoanDto, PayLoanDto }
+export { CreateLoanDto }

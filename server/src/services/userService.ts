@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { prisma } from '../config/prisma'
 import { UpdateUserDto, UpdateUserPasswordDto } from '../dto/user'
 import BadRequestError from '../errors/other/badRequestError'
+import { checkPassword } from '../middlewares/checkPassword'
 
 import { FileUploadService } from './fileUploadService'
 
@@ -50,7 +51,12 @@ export class UserService {
       data: { ...userData },
     })
 
-    return updatedUser
+    return {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      avatar: updatedUser.avatar,
+    }
   }
 
   async updatePassword(
@@ -65,8 +71,10 @@ export class UserService {
       throw new BadRequestError('User not found')
     }
 
-    if (user.password !== userData.password) {
-      throw new BadRequestError('Incorrect password')
+    const passwordMatch = await checkPassword(userData.password, user.password)
+
+    if (!passwordMatch) {
+      throw new BadRequestError('Password does not match')
     }
 
     await prisma.user.update({
@@ -86,7 +94,12 @@ export class UserService {
       throw new BadRequestError('User not found')
     }
 
-    return user
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar,
+    }
   }
 
   async deleteUser(id: string) {

@@ -33,6 +33,7 @@ authRouter.post('/login', async (req, res, next) => {
     const token = signJwtToken({ id: loggedUser.id })
 
     // Sending the token via cookie
+    res.clearCookie('token') // Clearing the cookie just in case
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

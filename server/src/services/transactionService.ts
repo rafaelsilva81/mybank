@@ -27,6 +27,10 @@ export class TransactionService {
       throw new AccountNotFoundError('Account not found')
     }
 
+    if (transactionData.amount <= 0) {
+      throw new TransactionError('Invalid amount')
+    }
+
     const newTransaction = await prisma.transaction.create({
       data: {
         amount: transactionData.amount,
@@ -47,6 +51,9 @@ export class TransactionService {
             id: newTransaction.id,
           },
         },
+      },
+      include: {
+        transactions: true,
       },
     })
 
@@ -72,7 +79,7 @@ export class TransactionService {
       throw new AccountNotFoundError('Account not found')
     }
 
-    if (account.balance - transactionData.amount <= 0) {
+    if (account.balance - transactionData.amount < 0) {
       throw new InsufficientFundsError('Insufficient funds for withdrawal')
     }
 
@@ -89,7 +96,6 @@ export class TransactionService {
       where: {
         id: account.id,
       },
-
       data: {
         balance: account.balance - transactionData.amount,
         transactions: {
@@ -98,6 +104,9 @@ export class TransactionService {
           },
         },
       },
+      include: {
+        transactions: true,
+      },
     })
 
     if (!updatedAccount) {
@@ -105,37 +114,6 @@ export class TransactionService {
     }
 
     return updatedAccount
-  }
-
-  // this will remove the transaction from histroy withouth affecting the balance
-  async removeTransaction(userId: string, transactionId: string) {
-    const account = await prisma.account.findUnique({
-      where: {
-        userId: userId,
-      },
-    })
-
-    if (!account) {
-      throw new AccountNotFoundError('Account not found')
-    }
-
-    const transaction = await prisma.transaction.findUnique({
-      where: {
-        id: transactionId,
-      },
-    })
-
-    if (!transaction || transaction.accountId !== account.id) {
-      throw new TransactionError('Transaction not found')
-    }
-
-    await prisma.transaction.delete({
-      where: {
-        id: transactionId,
-      },
-    })
-
-    return true
   }
 
   // list transactions for a given user
@@ -160,13 +138,17 @@ export class TransactionService {
     })
 
     // return only type, date and amount
-    return transactions.map((transaction) => {
+    const returnTransactions = transactions.map((transaction) => {
       return {
         type: transaction.type,
         createdAt: transaction.createdAt,
         amount: transaction.amount,
       }
     })
+
+    return {
+      transactions: returnTransactions,
+    }
   }
 
   // list specific transaction for a given user
@@ -192,5 +174,21 @@ export class TransactionService {
     }
 
     return transaction
+  }
+
+  async getBalance(userId: string) {
+    const account = await prisma.account.findUnique({
+      where: {
+        userId: userId,
+      },
+    })
+
+    if (!account) {
+      throw new AccountNotFoundError('Account not found')
+    }
+
+    return {
+      balance: account.balance,
+    }
   }
 }
