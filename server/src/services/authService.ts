@@ -19,7 +19,7 @@ export class AuthService {
     })
 
     if (checkUser) {
-      throw new RegisterError('E-mail já cadastrado')
+      throw new RegisterError('User already exists')
     }
 
     const newUser = await prisma.user.create({
@@ -42,13 +42,13 @@ export class AuthService {
     })
 
     if (!checkUser) {
-      throw new LoginError('E-mail ou senha incorretos')
+      throw new LoginError('Incorret email or password')
     }
 
     const checkPasswordResult = checkPassword(user.password, checkUser.password)
 
     if (!checkPasswordResult) {
-      throw new LoginError('E-mail ou senha incorretos')
+      throw new LoginError('Incorret email or password')
     }
 
     return checkUser

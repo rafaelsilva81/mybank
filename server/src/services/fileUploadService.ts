@@ -21,8 +21,8 @@ export class FileUploadService {
       //return relative path
       return '/uploads/' + picture.filename
     } catch (error) {
-      console.error(error)
-      throw new FileUploadError('Error while uploading the file')
+      // this will cast the error to a FileUploadError
+      throw new FileUploadError('Error uploading file')
     }
   }
 }

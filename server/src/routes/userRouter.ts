@@ -87,6 +87,7 @@ userRouter.patch('/password', async (req: JWTRequest, res, next) => {
     res.clearCookie('token')
     res.status(204).json({})
   } catch (error) {
+    console.debug('Found error, should call error handler')
     next(error)
   }
 })
