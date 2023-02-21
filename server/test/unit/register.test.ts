@@ -1,14 +1,19 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import eventEmitter from '../../src/config/events'
 import { prisma } from '../../src/config/prisma'
 import { hashPassword } from '../../src/middlewares/hashPassword'
 import { AuthService } from '../../src/services/authService'
 
+/* 
+  This file contains unit tests for the register functionallity.
+  It will use the AuthService to test the register functionallity.
+  This does not test the routes, only the business logic.
+*/
 const authService = new AuthService()
-jest.retryTimes(5)
 
 const testUser = {
   name: 'Teste',
-  email: 'teste123@gmal.com',
+  email: 'registertest@gmail.com',
   password: '12345678',
 }
 
@@ -17,6 +22,15 @@ const duplicatedUser = {
   email: 'duplicate@email.com',
   password: '12345678',
 }
+
+beforeAll(async () => {
+  await prisma.user.create({
+    data: {
+      ...duplicatedUser,
+      password: await hashPassword(duplicatedUser.password),
+    },
+  })
+})
 
 describe('Register', () => {
   test('Should register a new user', async () => {
@@ -37,15 +51,5 @@ describe('Register', () => {
   test('Should not register a new user with an existing email', async () => {
     const user = authService.registerUser(duplicatedUser)
     await expect(user).rejects.toThrow()
-  })
-})
-
-beforeAll(async () => {
-  await prisma.user.deleteMany()
-  await prisma.user.create({
-    data: {
-      ...duplicatedUser,
-      password: await hashPassword(duplicatedUser.password),
-    },
   })
 })
