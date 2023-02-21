@@ -2,6 +2,11 @@ import { PrismaClient } from '@prisma/client'
 
 import { env } from './env'
 
+/* 
+  This file will configure a default prisma client.
+  It will also cache the client in the global object.
+*/
+
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
 export const prisma =

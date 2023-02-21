@@ -8,6 +8,10 @@ import RegisterError from '../errors/auth/registerError'
 import { checkPassword } from '../middlewares/checkPassword'
 import { hashPassword } from '../middlewares/hashPassword'
 
+/* 
+  This file will contain all the auth business logic related to Authentification.
+  It will be used by the authRouter to handle the routes.
+*/
 export class AuthService {
   async registerUser(user: z.infer<typeof CreateUserDto>) {
     const hashed = await hashPassword(user.password)

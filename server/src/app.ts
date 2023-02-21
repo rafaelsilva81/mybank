@@ -10,6 +10,11 @@ import errorHandler from './middlewares/errorHandler'
 import authRouter from './routes/authRouter'
 import userRouter from './routes/userRouter'
 
+/* 
+  This is the main file of the application using express.
+  It will be used to configure middlewares and routes.
+  It will be used to start the server and listen to requests.
+*/
 const app = express()
 
 async function bootstrap() {

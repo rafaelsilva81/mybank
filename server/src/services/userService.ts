@@ -6,6 +6,10 @@ import BadRequestError from '../errors/other/badRequestError'
 
 import { FileUploadService } from './fileUploadService'
 
+/* 
+  This file will contain all the user business logic related to the user.
+  It will be used by the userRouter to handle the routes.
+*/
 export class UserService {
   fileUploadService: FileUploadService
 

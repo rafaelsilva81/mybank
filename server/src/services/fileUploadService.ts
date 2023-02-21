@@ -4,6 +4,11 @@ import sharp from 'sharp'
 
 import FileUploadError from '../errors/other/fileUploadError'
 
+/* 
+  This file will be used by other serives when they need to upload a file.
+  It will work with the multer middleware to upload the file.
+  It will compress the image and return the relative path to the file.
+*/
 export class FileUploadService {
   public async uploadAvatar(picture: Express.Multer.File) {
     try {

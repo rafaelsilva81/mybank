@@ -3,6 +3,10 @@ import AccountNotFoundError from '../errors/account/accountNotFoundError'
 import InsufficientFundsError from '../errors/balance/insufficientFundsError'
 import InternalError from '../errors/other/internalError'
 
+/* 
+  This file will contain all the transaction business logic related to transactions.
+  It will be used by the transactionRouter to handle the routes.
+*/
 export class TransactionService {
   // this will create a new deposit and update the balance
   async deposit(userId: string, amount: number) {

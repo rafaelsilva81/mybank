@@ -4,6 +4,10 @@ import InsufficientFundsError from '../errors/balance/insufficientFundsError'
 import BadRequestError from '../errors/other/badRequestError'
 import InternalError from '../errors/other/internalError'
 
+/* 
+  This file will contain all the loan business logic related to loans.
+  It will be used by the loanRouter to handle the routes.
+*/
 export class LoanService {
   async getLoan(userId: string, amount: number) {
     const account = await prisma.account.findUnique({

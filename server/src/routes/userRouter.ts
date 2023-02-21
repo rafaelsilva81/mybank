@@ -1,33 +1,18 @@
-import path from 'path'
-
 import { Router as expressRouter } from 'express'
 import { Request as JWTRequest } from 'express-jwt'
-import multer from 'multer'
 
 import { UpdateUserDto, UpdateUserPasswordDto } from '../dto/user'
 import FileUploadError from '../errors/other/fileUploadError'
+import fileUploader from '../middlewares/fileUploader'
 import { UserService } from '../services/userService'
 
 const userRouter = expressRouter()
 const userService = new UserService()
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      const uploadPath = path.join(__dirname, '../../uploads')
-      cb(null, uploadPath)
-    },
-    filename: (req, file, cb) => {
-      cb(null, `${Date.now()}_${file.originalname}`)
-    },
-  }),
-  fileFilter: (req, file, cb) => {
-    if (!file.mimetype.startsWith('image/')) {
-      return cb(new Error('Only images are allowed'))
-    }
-    cb(null, true)
-  },
-})
+/* 
+  This file is a router. It will handle all the routes that start with /user.
+  It will call the userService to handle the business logic.  
+*/
 
 userRouter.get('/', async (req: JWTRequest, res, next) => {
   try {
@@ -43,7 +28,7 @@ userRouter.get('/', async (req: JWTRequest, res, next) => {
 
 userRouter.patch(
   '/avatar',
-  upload.single('avatar'),
+  fileUploader.single('avatar'),
   async (req: JWTRequest, res, next) => {
     try {
       const file = req.file

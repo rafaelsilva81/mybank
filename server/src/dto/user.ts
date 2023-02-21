@@ -1,5 +1,11 @@
 import { z } from 'zod'
 
+/* 
+  This file will contain all the user DTOs.
+  Using zod schemas for both validation and type safety.
+  the schemas can be converted to types using the z.infer function.
+  Example: z.infer<typeof CreateUserDto>
+*/
 const CreateUserDto = z.object({
   name: z.string().max(100),
   email: z.string().email(),

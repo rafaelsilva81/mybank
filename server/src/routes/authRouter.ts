@@ -8,6 +8,11 @@ import { AuthService } from '../services/authService'
 const authRouter = expressRouter()
 const authService = new AuthService()
 
+/* 
+  This file is a router. It will handle all the routes that start with /auth.
+  It will call the authService to handle the business logic.
+*/
+
 authRouter.post('/register', async (req, res, next) => {
   try {
     const userData = CreateUserDto.parse(req.body)
