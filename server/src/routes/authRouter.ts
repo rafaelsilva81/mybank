@@ -49,7 +49,7 @@ authRouter.post('/login', async (req, res, next) => {
 authRouter.get('/logout', (req, res, next) => {
   try {
     res.clearCookie('token')
-    res.status(200).json({})
+    res.status(204).json({})
   } catch (error) {
     next(error)
   }

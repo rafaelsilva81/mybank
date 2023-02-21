@@ -11,7 +11,8 @@ import { AppError } from '../errors/appError'
   If the error is an instance of ZodError, it will return a json with the error message and the status code 400.
   Any other error will return a json with the error message and the status code 500.
   
-  OBS: The next function is not used in this middleware, but it is required by express to work. (even thought eslint complains about it)
+  OBS: The next function is not used in this middleware, but it is required by express to work. 
+  (eslint still complains about it)
 */
 
 export default function errorHandler(
@@ -20,7 +21,7 @@ export default function errorHandler(
   res: Response,
   next: NextFunction // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
-  console.debug('CALLED ERROR HANDLER')
+  console.error('Error handler: ', err)
   if (err instanceof AppError) {
     return res.status(err.status).json({ message: err.message })
   } else if (err instanceof ZodError) {

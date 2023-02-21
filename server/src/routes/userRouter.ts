@@ -77,4 +77,18 @@ userRouter.patch('/password', async (req: JWTRequest, res, next) => {
   }
 })
 
+userRouter.delete('/', async (req: JWTRequest, res, next) => {
+  try {
+    const id = req.auth?.id
+
+    await userService.deleteUser(id)
+
+    // Clear the cookie (logout)
+    res.clearCookie('token')
+    res.status(204).json({})
+  } catch (error) {
+    next(error)
+  }
+})
+
 export default userRouter

@@ -1,4 +1,7 @@
+import { z } from 'zod'
+
 import { prisma } from '../config/prisma'
+import { CreateDepositDto, CreateWithdrawalDto } from '../dto/transaction'
 import AccountNotFoundError from '../errors/account/accountNotFoundError'
 import TransactionError from '../errors/account/transactionError'
 import InsufficientFundsError from '../errors/balance/insufficientFundsError'
@@ -10,7 +13,10 @@ import InternalError from '../errors/other/internalError'
 */
 export class TransactionService {
   // this will create a new deposit and update the balance
-  async deposit(userId: string, amount: number, description: string | null) {
+  async deposit(
+    userId: string,
+    transactionData: z.infer<typeof CreateDepositDto>
+  ) {
     const account = await prisma.account.findUnique({
       where: {
         userId: userId,
@@ -23,10 +29,10 @@ export class TransactionService {
 
     const newTransaction = await prisma.transaction.create({
       data: {
-        amount: amount,
+        amount: transactionData.amount,
         accountId: account.id,
         type: 'DEPOSIT',
-        description,
+        description: transactionData.description,
       },
     })
 
@@ -35,7 +41,7 @@ export class TransactionService {
         id: account.id,
       },
       data: {
-        balance: account.balance + amount,
+        balance: account.balance + transactionData.amount,
         transactions: {
           connect: {
             id: newTransaction.id,
@@ -52,7 +58,10 @@ export class TransactionService {
   }
 
   // this will create a new withdrawal and update the balance
-  async withdraw(userId: string, amount: number, description: string | null) {
+  async withdraw(
+    userId: string,
+    transactionData: z.infer<typeof CreateWithdrawalDto>
+  ) {
     const account = await prisma.account.findUnique({
       where: {
         userId: userId,
@@ -63,16 +72,16 @@ export class TransactionService {
       throw new AccountNotFoundError('Account not found')
     }
 
-    if (account.balance - amount <= 0) {
+    if (account.balance - transactionData.amount <= 0) {
       throw new InsufficientFundsError('Insufficient funds for withdrawal')
     }
 
     const newTransaction = await prisma.transaction.create({
       data: {
-        amount: amount,
+        amount: transactionData.amount,
         accountId: account.id,
         type: 'WITHDRAWAL',
-        description,
+        description: transactionData.description,
       },
     })
 
@@ -82,7 +91,7 @@ export class TransactionService {
       },
 
       data: {
-        balance: account.balance - amount,
+        balance: account.balance - transactionData.amount,
         transactions: {
           connect: {
             id: newTransaction.id,
@@ -125,6 +134,8 @@ export class TransactionService {
         id: transactionId,
       },
     })
+
+    return true
   }
 
   // list transactions for a given user

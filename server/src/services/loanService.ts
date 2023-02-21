@@ -9,7 +9,7 @@ import InternalError from '../errors/other/internalError'
   It will be used by the loanRouter to handle the routes.
 */
 export class LoanService {
-  async getLoan(userId: string, amount: number) {
+  async applyForLoan(userId: string, amount: number) {
     const account = await prisma.account.findUnique({
       where: {
         userId,
@@ -100,13 +100,13 @@ export class LoanService {
       throw new InternalError('Error updating account')
     }
 
-    const clearedLoan = await prisma.loan.delete({
+    await prisma.loan.delete({
       where: {
         id: loan.id,
       },
     })
 
-    return clearedLoan
+    return true
   }
 
   async getLoanInfo(userId: string) {

@@ -98,6 +98,7 @@ export class UserService {
       throw new BadRequestError('User not found')
     }
 
+    // This will also delete the user's account and transactions (cascade delete)
     await prisma.user.delete({
       where: { id },
     })

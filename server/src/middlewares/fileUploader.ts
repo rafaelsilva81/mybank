@@ -2,6 +2,8 @@ import path from 'path'
 
 import multer from 'multer'
 
+import UnsupportedMediaError from '../errors/other/unsupportedMediaError'
+
 /* 
     This is a middleware that handles file uploads.
     it will be called inside the routes.
@@ -20,7 +22,7 @@ const fileUploader = multer({
   }),
   fileFilter: (req, file, cb) => {
     if (!file.mimetype.startsWith('image/')) {
-      return cb(new Error('Only images are allowed'))
+      return cb(new UnsupportedMediaError('Only images are allowed'))
     }
     cb(null, true)
   },
