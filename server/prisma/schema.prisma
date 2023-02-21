@@ -55,7 +55,7 @@ model Transaction {
   amount      Float
   timestamp   DateTime        @default(now())
   accountId   String
-  account     Account         @relation(fields: [accountId], references: [id])
+  account     Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
   createdAt   DateTime        @default(now())
 
   @@map("transactions")
