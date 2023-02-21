@@ -1,5 +1,6 @@
 import { prisma } from '../config/prisma'
 import AccountNotFoundError from '../errors/account/accountNotFoundError'
+import TransactionError from '../errors/account/transactionError'
 import InsufficientFundsError from '../errors/balance/insufficientFundsError'
 import InternalError from '../errors/other/internalError'
 
@@ -9,7 +10,7 @@ import InternalError from '../errors/other/internalError'
 */
 export class TransactionService {
   // this will create a new deposit and update the balance
-  async deposit(userId: string, amount: number) {
+  async deposit(userId: string, amount: number, description: string | null) {
     const account = await prisma.account.findUnique({
       where: {
         userId: userId,
@@ -25,6 +26,7 @@ export class TransactionService {
         amount: amount,
         accountId: account.id,
         type: 'DEPOSIT',
+        description,
       },
     })
 
@@ -50,7 +52,7 @@ export class TransactionService {
   }
 
   // this will create a new withdrawal and update the balance
-  async withdraw(userId: string, amount: number) {
+  async withdraw(userId: string, amount: number, description: string | null) {
     const account = await prisma.account.findUnique({
       where: {
         userId: userId,
@@ -70,6 +72,7 @@ export class TransactionService {
         amount: amount,
         accountId: account.id,
         type: 'WITHDRAWAL',
+        description,
       },
     })
 
@@ -114,7 +117,7 @@ export class TransactionService {
     })
 
     if (!transaction || transaction.accountId !== account.id) {
-      throw new InternalError('Transaction not found')
+      throw new TransactionError('Transaction not found')
     }
 
     await prisma.transaction.delete({
@@ -145,6 +148,38 @@ export class TransactionService {
       },
     })
 
-    return transactions
+    // return only type, date and amount
+    return transactions.map((transaction) => {
+      return {
+        type: transaction.type,
+        createdAt: transaction.createdAt,
+        amount: transaction.amount,
+      }
+    })
+  }
+
+  // list specific transaction for a given user
+  async getTransaction(userId: string, transactionId: string) {
+    const account = await prisma.account.findUnique({
+      where: {
+        userId: userId,
+      },
+    })
+
+    if (!account) {
+      throw new AccountNotFoundError('Account not found')
+    }
+
+    const transaction = await prisma.transaction.findUnique({
+      where: {
+        id: transactionId,
+      },
+    })
+
+    if (!transaction || transaction.accountId !== account.id) {
+      throw new TransactionError('Transaction not found')
+    }
+
+    return transaction
   }
 }
