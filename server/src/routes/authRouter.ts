@@ -1,32 +1,26 @@
 import dayjs from 'dayjs'
 import { Router as expressRouter } from 'express'
-import { ZodError } from 'zod'
 
 import { CreateUserDto, LoginUserDto } from '../dto/user'
-import { AppError } from '../errors/appError'
 import { signJwtToken } from '../middlewares/signJwtToken'
 import { AuthService } from '../services/authService'
 
 const authRouter = expressRouter()
 const authService = new AuthService()
 
-authRouter.post('/register', async (req, res) => {
+authRouter.post('/register', async (req, res, next) => {
   try {
     const userData = CreateUserDto.parse(req.body)
 
     const newUser = await authService.registerUser(userData)
 
     res.status(201).json({ newUser })
-  } catch (error: unknown) {
-    if (error instanceof ZodError) {
-      res.status(400).json({ message: 'Invalid data' })
-    } else if (error instanceof AppError) {
-      res.status(error.status).json({ message: error.message })
-    }
+  } catch (error) {
+    next(error)
   }
 })
 
-authRouter.post('/login', async (req, res) => {
+authRouter.post('/login', async (req, res, next) => {
   try {
     const userData = LoginUserDto.parse(req.body)
 
@@ -42,19 +36,18 @@ authRouter.post('/login', async (req, res) => {
     })
 
     res.status(200).json(loggedUser)
-  } catch (error: unknown) {
-    res.clearCookie('token')
-    if (error instanceof ZodError) {
-      res.status(400).json({ message: 'Invalid data' })
-    } else if (error instanceof AppError) {
-      res.status(error.status).json({ message: error.message })
-    }
+  } catch (error) {
+    next(error)
   }
 })
 
-authRouter.get('/logout', (req, res) => {
-  res.clearCookie('token')
-  res.status(200).json({})
+authRouter.get('/logout', (req, res, next) => {
+  try {
+    res.clearCookie('token')
+    res.status(200).json({})
+  } catch (error) {
+    next(error)
+  }
 })
 
 export default authRouter

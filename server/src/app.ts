@@ -6,18 +6,18 @@ import { expressjwt as jwt } from 'express-jwt'
 import morgan from 'morgan'
 
 import { env } from './config/env'
+import errorHandler from './middlewares/errorHandler'
 import authRouter from './routes/authRouter'
 import userRouter from './routes/userRouter'
 
 const app = express()
 
 async function bootstrap() {
-  // Middleware
+  // Config middleware
   app.use(express.json())
   app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'))
   app.use(cors({ exposedHeaders: 'Authorization' }))
   app.use(express.urlencoded({ extended: true }))
-
   app.use(
     jwt({
       secret: env.JWT_SECRET,
@@ -32,6 +32,9 @@ async function bootstrap() {
   app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
   app.use('/auth', authRouter)
   app.use('/user', userRouter)
+
+  // Other middleware
+  app.use(errorHandler)
 
   // Start server
   app.listen(env.PORT, () => {

@@ -27,8 +27,20 @@ model Account {
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String        @unique
   transactions Transaction[]
+  loan         Loan?
 
   @@map("accounts")
+}
+
+model Loan {
+  id        String   @id @default(uuid())
+  amount    Float
+  interest  Float
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("loans")
 }
 
 enum TransactionType {
@@ -43,6 +55,7 @@ model Transaction {
   timestamp DateTime        @default(now())
   accountId String
   account   Account         @relation(fields: [accountId], references: [id])
+  createdAt DateTime        @default(now())
 
   @@map("transactions")
 }

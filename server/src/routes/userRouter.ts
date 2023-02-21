@@ -5,7 +5,6 @@ import { Request as JWTRequest } from 'express-jwt'
 import multer from 'multer'
 
 import { UpdateUserDto, UpdateUserPasswordDto } from '../dto/user'
-import { AppError } from '../errors/appError'
 import FileUploadError from '../errors/other/fileUploadError'
 import { UserService } from '../services/userService'
 
@@ -30,7 +29,7 @@ const upload = multer({
   },
 })
 
-userRouter.get('/', async (req: JWTRequest, res) => {
+userRouter.get('/', async (req: JWTRequest, res, next) => {
   try {
     const id = req.auth?.id
 
@@ -38,16 +37,14 @@ userRouter.get('/', async (req: JWTRequest, res) => {
 
     res.status(200).json(user)
   } catch (error) {
-    if (error instanceof AppError) {
-      res.status(error.status).json({ message: error.message })
-    }
+    next(error)
   }
 })
 
 userRouter.patch(
   '/avatar',
   upload.single('avatar'),
-  async (req: JWTRequest, res) => {
+  async (req: JWTRequest, res, next) => {
     try {
       const file = req.file
 
@@ -59,14 +56,12 @@ userRouter.patch(
 
       res.status(200).json({ message: 'Avatar uploaded' })
     } catch (error) {
-      if (error instanceof AppError) {
-        res.status(error.status).json({ message: error.message })
-      }
+      next(error)
     }
   }
 )
 
-userRouter.patch('/profile', async (req: JWTRequest, res) => {
+userRouter.patch('/profile', async (req: JWTRequest, res, next) => {
   try {
     const id = req.auth?.id
 
@@ -76,13 +71,11 @@ userRouter.patch('/profile', async (req: JWTRequest, res) => {
 
     res.status(204).json(updatedUser)
   } catch (error) {
-    if (error instanceof AppError) {
-      res.status(error.status).json({ message: error.message })
-    }
+    next(error)
   }
 })
 
-userRouter.patch('/password', async (req: JWTRequest, res) => {
+userRouter.patch('/password', async (req: JWTRequest, res, next) => {
   try {
     const id = req.auth?.id
 
@@ -94,9 +87,7 @@ userRouter.patch('/password', async (req: JWTRequest, res) => {
     res.clearCookie('token')
     res.status(204).json({})
   } catch (error) {
-    if (error instanceof AppError) {
-      res.status(error.status).json({ message: error.message })
-    }
+    next(error)
   }
 })
 
