@@ -49,13 +49,14 @@ enum TransactionType {
 }
 
 model Transaction {
-  id        String          @id @default(uuid())
-  type      TransactionType
-  amount    Float
-  timestamp DateTime        @default(now())
-  accountId String
-  account   Account         @relation(fields: [accountId], references: [id])
-  createdAt DateTime        @default(now())
+  id          String          @id @default(uuid())
+  description String?
+  type        TransactionType
+  amount      Float
+  timestamp   DateTime        @default(now())
+  accountId   String
+  account     Account         @relation(fields: [accountId], references: [id])
+  createdAt   DateTime        @default(now())
 
   @@map("transactions")
 }
