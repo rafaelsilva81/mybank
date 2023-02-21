@@ -2,9 +2,14 @@
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        greek: ["Caesar Dressing", "cursive"],
+      },
+    
+    },
     fontFamily: {
-      sans: ["Inter", "sans-serif"],
+      sans: ["Alegreya Sans", "sans-serif"],
     },
   },
   plugins: [],

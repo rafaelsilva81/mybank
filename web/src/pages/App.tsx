@@ -2,11 +2,11 @@ function App() {
   return (
     <div
       className="bg-gradient-to-br from-violet-600 to-orange-600
-      font-semibold text-white 
+    text-white 
       h-screen w-screen flex flex-col justify-center items-center gap-4
       "
     >
-      <h1 className="text-6xl">Hello Tailwind + React!</h1>
+      <h1 className="text-6xl font-greek">Hello Tailwind + React!</h1>
       <p className="text-2xl">
         Criado por{" "}
         <a
