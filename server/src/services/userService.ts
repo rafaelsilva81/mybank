@@ -88,6 +88,9 @@ export class UserService {
   async getUser(id: string) {
     const user = await prisma.user.findUnique({
       where: { id },
+      include: {
+        account: true,
+      },
     })
 
     if (!user) {
@@ -99,6 +102,7 @@ export class UserService {
       name: user.name,
       email: user.email,
       avatar: user.avatar,
+      balance: user.account?.balance,
     }
   }
 

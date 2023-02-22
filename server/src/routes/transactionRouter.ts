@@ -11,18 +11,6 @@ import { TransactionService } from '../services/transactionService'
 const transactionRouter = expressRouter()
 const transactionService = new TransactionService()
 
-transactionRouter.get('/balance', async (req: JWTRequest, res, next) => {
-  try {
-    const id = req.auth?.id
-
-    const account = await transactionService.getBalance(id)
-
-    res.status(200).json(account)
-  } catch (error) {
-    next(error)
-  }
-})
-
 transactionRouter.get('/', async (req: JWTRequest, res, next) => {
   try {
     const id = req.auth?.id

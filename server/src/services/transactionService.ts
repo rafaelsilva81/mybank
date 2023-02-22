@@ -175,20 +175,4 @@ export class TransactionService {
 
     return transaction
   }
-
-  async getBalance(userId: string) {
-    const account = await prisma.account.findUnique({
-      where: {
-        userId: userId,
-      },
-    })
-
-    if (!account) {
-      throw new AccountNotFoundError('Account not found')
-    }
-
-    return {
-      balance: account.balance,
-    }
-  }
 }
