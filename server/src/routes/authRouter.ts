@@ -32,24 +32,17 @@ authRouter.post('/login', async (req, res, next) => {
     const loggedUser = await authService.loginUser(userData)
     const token = signJwtToken({ id: loggedUser.id })
 
-    // Sending the token via cookie
-    res.cookie('token', token, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      expires: dayjs().add(1, 'day').toDate(),
+    res.status(200).json({
+      id: loggedUser.id,
+      token: token,
     })
-
-    res.status(200).json(loggedUser)
   } catch (error) {
-    res.clearCookie('token')
     next(error)
   }
 })
 
 authRouter.get('/logout', (req, res, next) => {
   try {
-    res.clearCookie('token')
     res.status(204).json({})
   } catch (error) {
     next(error)

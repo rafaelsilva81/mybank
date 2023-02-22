@@ -26,15 +26,11 @@ async function bootstrap() {
   app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'))
   app.use(cors({ exposedHeaders: 'Authorization' }))
   app.use(express.urlencoded({ extended: true }))
-  app.use(cookieParser())
   app.use(
     jwt({
       secret: env.JWT_SECRET,
       algorithms: ['HS256'],
       maxAge: '1d',
-      getToken: (req) => {
-        return req.cookies?.token
-      },
     }).unless({
       path: [/^\/(auth|uploads)/i],
     })

@@ -68,8 +68,6 @@ userRouter.patch('/password', async (req: JWTRequest, res, next) => {
 
     await userService.updatePassword(id, userData)
 
-    // Clear the cookie (logout)
-    res.clearCookie('token')
     res.status(204).json({})
   } catch (error) {
     console.debug('Found error, should call error handler')
@@ -83,8 +81,6 @@ userRouter.delete('/', async (req: JWTRequest, res, next) => {
 
     await userService.deleteUser(id)
 
-    // Clear the cookie (logout)
-    res.clearCookie('token')
     res.status(204).json({})
   } catch (error) {
     next(error)

@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaMoneyBill } from 'react-icons/fa';
 import homeActionAtom from '../atoms/homeActionAtom';
 import LoginForm from '../components/forms/LoginForm';
@@ -7,6 +7,14 @@ import RegisterForm from '../components/forms/RegisterForm';
 
 const Login = () => {
   const [homeAction] = useAtom(homeActionAtom);
+
+  useEffect(() => {
+    // check cookie if user is logged in
+    if (localStorage.getItem('token')) {
+      window.location.href = '/';
+    }
+  });
+
   return (
     <main className='bg-main_gradient flex h-screen w-screen flex-col-reverse items-center justify-center gap-2  md:justify-between lg:flex-row'>
       <div className='flex flex-1 flex-col gap-4 p-14'>
