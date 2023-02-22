@@ -32,6 +32,7 @@ module.exports = {
     'tailwindcss/no-custom-classname': 'off',
     'tailwindcss/no-contradicting-classname': 'off',
     'react/no-unescaped-entities': 'off',
+    'linebreak-style': ['warning', 'unix'],
     'import/order': [
       'error',
       {
