@@ -1,9 +1,12 @@
 import { Dialog } from '@headlessui/react';
-import React from 'react';
-import { FormEvent, useState } from 'react';
+import { AxiosError } from 'axios';
+import { useState } from 'react';
 import { FaHistory, FaList, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
 import { GiReceiveMoney, GiPayMoney, GiTakeMyMoney } from 'react-icons/gi';
+import { useQuery } from 'react-query';
 import { NavLink } from 'react-router-dom';
+import api from '../util/api';
+import LoadingElement from './LoadingElement';
 
 interface INavItem {
   name: string;
@@ -45,7 +48,23 @@ const inactiveStyle =
   'flex items-center gap-2 rounded-lg px-4 py-2 transition ease-in-out hover:text-indigo-200';
 
 const Sidebar = () => {
+  const { data: user, isLoading } = useQuery<UserResponse, AxiosError>(
+    'user',
+    async () => {
+      return api
+        .get('/user')
+        .then((res) => res.data)
+        .catch((err) => {
+          throw err;
+        });
+    }
+  );
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  if (isLoading || !user) {
+    return <LoadingElement />;
+  }
 
   return (
     <>
@@ -53,13 +72,18 @@ const Sidebar = () => {
       <aside className='hidden min-h-screen max-w-xs flex-col gap-3 bg-indigo-600 p-3 pt-10 text-white shadow-lg lg:flex'>
         {/* Seção do perfil do usuario */}
         <div className='flex items-center gap-2 px-2'>
-          <FaUserCircle size={32} />
+          {user.avatar ? (
+            <img src={`http://localhost:3333/${user.avatar}`} width='40px' />
+          ) : (
+            <FaUserCircle size={32} />
+          )}
           <div className='flex flex-col'>
             <span className='brea-all'>
-              Hello, <span className='font-bold'>name</span>
+              Hello, <span className='font-bold'>{user.name}</span>
             </span>
-            <span className='text-sm font-bold text-white'>
-              Balance: <span className='font-bold'>$0,00</span>
+            <span className='font-bold text-white'>
+              Balance:{' '}
+              <span className='font-bold'>${user.balance.toFixed(2)}</span>
             </span>
           </div>
         </div>
@@ -80,8 +104,12 @@ const Sidebar = () => {
         </button>
 
         <div className='flex items-center justify-center gap-1'>
-          <span className='text-sm font-bold text-white'>name</span>
-          <FaUserCircle size={24} color='white' />
+          <span className='text-sm font-bold text-white'>{user.name}</span>
+          {user.avatar ? (
+            <img src={`http://localhost:3333/${user.avatar}`} width='40px' />
+          ) : (
+            <FaUserCircle size={20} className='text-white' />
+          )}
         </div>
       </nav>
 
