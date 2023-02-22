@@ -24,6 +24,7 @@ module.exports = {
     'tailwindcss',
     'prettier',
     'tailwindcss',
+    'import',
   ],
   rules: {
     'prettier/prettier': ['error'],
@@ -31,5 +32,19 @@ module.exports = {
     'tailwindcss/no-custom-classname': 'off',
     'tailwindcss/no-contradicting-classname': 'off',
     'react/no-unescaped-entities': 'off',
+    'import/order': [
+      'error',
+      {
+        alphabetize: { order: 'asc' },
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+        ],
+      },
+    ],
   },
 };

@@ -6,6 +6,9 @@ const AppPages = () => {
     <>
       <Routes>
         <Route path='/transactions' element={<>penis</>} />
+        <Route path='/deposit' element={<>penis</>} />
+        <Route path='/withdraw' element={<>penis</>} />
+        <Route path='/loan' element={<>penis</>} />
       </Routes>
     </>
   );

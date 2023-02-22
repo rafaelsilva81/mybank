@@ -1,6 +1,6 @@
+import { useAtom } from 'jotai';
 import React from 'react';
 import { FaMoneyBill } from 'react-icons/fa';
-import { useAtom } from 'jotai';
 import homeActionAtom from '../atoms/homeActionAtom';
 import LoginForm from '../components/forms/LoginForm';
 import RegisterForm from '../components/forms/RegisterForm';
