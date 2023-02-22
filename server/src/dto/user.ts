@@ -6,11 +6,17 @@ import { z } from 'zod'
   the schemas can be converted to types using the z.infer function.
   Example: z.infer<typeof CreateUserDto>
 */
-const CreateUserDto = z.object({
-  name: z.string().max(100),
-  email: z.string().email(),
-  password: z.string().min(6),
-})
+const CreateUserDto = z
+  .object({
+    name: z.string().max(100),
+    email: z.string().email(),
+    password: z.string().min(6),
+    passwordConfirmation: z.string().min(6),
+  })
+  .refine((data) => data.password === data.passwordConfirmation, {
+    message: 'Passwords do not match',
+    path: ['passwordConfirmation'],
+  })
 
 const LoginUserDto = z.object({
   email: z.string().email(),
