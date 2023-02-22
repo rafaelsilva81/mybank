@@ -1,8 +1,15 @@
 import { Dialog } from '@headlessui/react';
 import { AxiosError } from 'axios';
 import { useState } from 'react';
-import { FaHistory, FaList, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
-import { GiReceiveMoney, GiPayMoney, GiTakeMyMoney } from 'react-icons/gi';
+import {
+  FaCog,
+  FaHistory,
+  FaList,
+  FaMoneyBillAlt,
+  FaSignOutAlt,
+  FaUserCircle,
+} from 'react-icons/fa';
+import { GiReceiveMoney, GiPayMoney } from 'react-icons/gi';
 import { useQuery } from 'react-query';
 import { NavLink } from 'react-router-dom';
 import api from '../util/api';
@@ -32,8 +39,13 @@ const navigation: INavItem[] = [
   },
   {
     name: 'Loan',
-    icon: <GiTakeMyMoney />,
+    icon: <FaMoneyBillAlt />,
     href: '/loan',
+  },
+  {
+    name: 'Profile',
+    icon: <FaCog />,
+    href: '/profile',
   },
   {
     name: 'Logout',

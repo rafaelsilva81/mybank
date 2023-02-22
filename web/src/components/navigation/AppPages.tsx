@@ -11,6 +11,7 @@ const AppPages = () => {
         <Route path='/deposit' element={<>deposit</>} />
         <Route path='/withdraw' element={<>withdraw</>} />
         <Route path='/loan' element={<>loan</>} />
+        <Route path='/profile' element={<> profile </>} />
         <Route path='/logout' element={<Logout />} />
         <Route path='*' element={<>404</>} />
       </Routes>
