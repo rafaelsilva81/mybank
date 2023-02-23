@@ -32,6 +32,7 @@
           "caseInsensitive": true
         }
       }
-    ]
+    ],
+    "linebreak-style": ["warning", "unix"]
   }
 }

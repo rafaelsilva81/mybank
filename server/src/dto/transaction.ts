@@ -11,9 +11,19 @@ const CreateDepositDto = z.object({
   description: z.string().optional(),
 })
 
-const ListTransactionsDto = z.object({
-  page: z.number().optional(),
-})
+const ListTransactionsDto = z
+  .object({
+    page: z.string().optional(),
+  })
+  .refine((data) => {
+    if (data.page && isNaN(Number(data.page))) {
+      return {
+        message: 'page must be a number',
+        path: ['page'],
+      }
+    }
+    return true
+  })
 
 const CreateWithdrawalDto = z.object({
   amount: z.number().positive(),

@@ -139,18 +139,7 @@ export class TransactionService {
       skip: (page - 1) * 10,
     })
 
-    // return only type, date and amount
-    const returnTransactions = transactions.map((transaction) => {
-      return {
-        type: transaction.type,
-        createdAt: transaction.createdAt,
-        amount: transaction.amount,
-      }
-    })
-
-    return {
-      transactions: returnTransactions,
-    }
+    return transactions
   }
 
   // list specific transaction for a given user
