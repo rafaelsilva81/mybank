@@ -11,6 +11,10 @@ const CreateDepositDto = z.object({
   description: z.string().optional(),
 })
 
+const ListTransactionsDto = z.object({
+  page: z.number().optional(),
+})
+
 const CreateWithdrawalDto = z.object({
   amount: z.number().positive(),
   description: z.string().optional(),
@@ -28,4 +32,9 @@ const RemoveTransactionDto = z.object({
   id: z.string(),
 })
 
-export { CreateDepositDto, CreateWithdrawalDto, RemoveTransactionDto }
+export {
+  CreateDepositDto,
+  CreateWithdrawalDto,
+  RemoveTransactionDto,
+  ListTransactionsDto,
+}

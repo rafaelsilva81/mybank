@@ -4,6 +4,7 @@ import { Request as JWTRequest } from 'express-jwt'
 import {
   CreateDepositDto,
   CreateWithdrawalDto,
+  ListTransactionsDto,
   RemoveTransactionDto,
 } from '../dto/transaction'
 import { TransactionService } from '../services/transactionService'
@@ -15,7 +16,9 @@ transactionRouter.get('/', async (req: JWTRequest, res, next) => {
   try {
     const id = req.auth?.id
 
-    const transactions = await transactionService.listTransactions(id)
+    const { page = 1 } = ListTransactionsDto.parse(req.query)
+
+    const transactions = await transactionService.listTransactions(id, page)
 
     res.status(200).json(transactions)
   } catch (error) {

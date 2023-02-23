@@ -117,7 +117,7 @@ export class TransactionService {
   }
 
   // list transactions for a given user
-  async listTransactions(userId: string) {
+  async listTransactions(userId: string, page: number) {
     const account = await prisma.account.findUnique({
       where: {
         userId: userId,
@@ -135,6 +135,8 @@ export class TransactionService {
       orderBy: {
         createdAt: 'desc', // sort by newest first
       },
+      take: 10, // limit to 10 transactions
+      skip: (page - 1) * 10,
     })
 
     // return only type, date and amount
