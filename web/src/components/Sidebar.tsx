@@ -38,11 +38,6 @@ const navigation: INavItem[] = [
     href: '/withdraw',
   },
   {
-    name: 'Loan',
-    icon: <FaMoneyBillAlt />,
-    href: '/loan',
-  },
-  {
     name: 'Profile',
     icon: <FaCog />,
     href: '/profile',
@@ -81,16 +76,16 @@ const Sidebar = () => {
   return (
     <>
       {/* Menu para telas grandes*/}
-      <aside className='hidden min-h-screen max-w-xs flex-col gap-3 bg-indigo-600 p-3 pt-10 text-white shadow-lg lg:flex'>
+      <aside className='hidden min-h-screen max-w-xs min-w-max flex-col gap-3 bg-indigo-700 p-3 pt-10 text-white shadow-lg lg:flex'>
         {/* Seção do perfil do usuario */}
         <div className='flex items-center gap-2 px-2'>
           {user.avatar ? (
-            <img src={`http://localhost:3333/${user.avatar}`} width='40px' />
+            <img src={`http://localhost:3333${user.avatar}`} width='40px' />
           ) : (
             <FaUserCircle size={32} />
           )}
-          <div className='flex flex-col'>
-            <span className='brea-all'>
+          <div className='flex flex-col max-w-full'>
+            <span className='break-all'>
               Hello, <span className='font-bold'>{user.name}</span>
             </span>
             <span className='font-bold text-white'>
@@ -107,7 +102,7 @@ const Sidebar = () => {
       </aside>
 
       {/* Header para telas pequenas*/}
-      <nav className='min-w-screen flex justify-between gap-2 bg-indigo-600 p-3 lg:hidden'>
+      <nav className='min-w-screen flex justify-between gap-2 bg-indigo-700 p-3 lg:hidden'>
         <button
           className='hover:text-primary flex items-center gap-1 rounded-md bg-white p-2 text-indigo-600'
           onClick={() => setIsMenuOpen(true)}
@@ -118,7 +113,7 @@ const Sidebar = () => {
         <div className='flex items-center justify-center gap-1'>
           <span className='text-sm font-bold text-white'>{user.name}</span>
           {user.avatar ? (
-            <img src={`http://localhost:3333/${user.avatar}`} width='40px' />
+            <img src={`http://localhost:3333${user.avatar}`} width='40px' />
           ) : (
             <FaUserCircle size={20} className='text-white' />
           )}
@@ -132,7 +127,7 @@ const Sidebar = () => {
         className='fixed inset-0 flex rounded-md bg-slate-800/70'
       >
         <Dialog.Panel>
-          <aside className='flex min-h-screen max-w-xs flex-col gap-3 bg-indigo-600 p-3 pt-8 text-white shadow-lg'>
+          <aside className='flex min-h-screen max-w-xs flex-col gap-3 bg-indigo-700 p-3 pt-8 text-white shadow-lg'>
             <span className='flex items-center gap-2 px-2'>
               Balance: <span className='font-bold'>$0,00</span>
             </span>
